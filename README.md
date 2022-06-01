@@ -1,3 +1,2 @@
-# IoT-PUF
-PUF-based unique ID generation in IoT Devices
-Modifying readme file
+# OAI Final Project
+Robustness of Real Time deepfakes - Evaluating the robustness of real time deepfakes by Implementing Avatarify and examining edge cases on it.
