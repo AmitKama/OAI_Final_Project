@@ -167,11 +167,44 @@ Oren Shvartzman % Your Name
 \section{Introduction} \label{introduction}
 
 % Deepfakes and deepfakes in recent years
-% What is First Order Model
-% It has limitations - drawbacks, that in the literature, there is a growing amount of research dealing with the field.
-% Detection (Importance, ways)
-% What will be in the report
+Deepfake is a general term that encompasses the use of deep learning algorithms in order to create
+synthetic media, in which one subject in an existing visual and/or audio content is usually replaced
+with another's likeness. While fraudulent content has been around for some time, recent advances in
+machine vision have posed a major threat to the trust and transparency of the media. Using powerful
+machine-learning and deep-learning techniques, deepfakes can now manipulate or generate visual and
+audio content that can be more easily misleading.
 
+In recent years, deepfakes have garnered widespread attention for their uses in spreading fake news,
+committing financial fraud, creating pornographic materials, and many other disturbing uses. This has
+led to a significant need to identify and restrict their use.
+
+% First Order Model
+Ever since the introduction of deepfakes, researchers in deep learning have increasingly focused on
+this area of research. In particular, they propose methods, as well as practical implementations of
+deepfakes is in various fields. Among other methods, in~\cite{DBLP:journals/corr/abs-2003-00196}, Siarohin et al. propose
+the first order motion model for image animation. Their framework enables generating a video sequence,
+in which an object in a source image is animated according to the motion of a driving video, without
+using any annotation or prior information about the specific object to animate. According to them,
+once trained on a set of videos depicting objects of the same category, the method can be applied
+to any object of it. Based on this method, a number of real time photorealistic avatars have recently
+been developed, one of which we will explore in this work.
+
+% It has limitations - drawbacks, that in the literature, there is a growing amount of research dealing with the field.
+However, real time avatars are far from perfect, as they are not robust when it comes to an edge cases.
+This includes facial gestures in the driving video, objects in the source or target media that make it
+difficult to identify facial boundaries, and many more.
+
+
+% Detection (Importance, ways)
+Note that this limitations can be create visual glitches and distortions that can be detected with the
+naked eye as well as by software, and therefore can be utilized for deepfakes detection. This observation
+drives a growing amount of research dealing with those inaccuracies for dual use -- correcting them in
+order to improve the deepfakes' credibility, or exploiting them to distinguish deepfakes from real content.
+
+% What will be in the report
+In this work, we evaluate the robustness of real time deepfakes by implementing first order motion
+model-based avatarify and examining various edge cases on it. After demonstrating failures in the
+implementation, we also provide a method to utilize them for deepfakes detection.
 
 
 \pagebreak{}
@@ -186,7 +219,7 @@ ICS domain.
 
 \pagebreak{}
 
-\section{Experiment and Results} \label{experiment and results}
+\section{Experiments and Results} \label{experiments and results}
 
 Below is a comparison table between the abovementioned ICS datasets. The purpose of the table is to be a
 decision support tool in selecting a suitable dataset for conducting anomalies detection studies in the
