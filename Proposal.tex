@@ -126,7 +126,7 @@ Amit Kama % Your name
 \begin{flushright} \large \emph{Author:} \\
 Oren Shvartzman % Your Name
 \end{flushright}
-\end{minipage}\\[1cm]
+\end{minipage}\\[3cm]
 
 % \begin{minipage}{0.4\textwidth}
 % \begin{flushleft} \large \emph{Author:}\\
@@ -190,13 +190,13 @@ to any object of it. Based on this method, a number of real time photorealistic 
 been developed, one of which we will explore in this work.
 
 % It has limitations - drawbacks, that in the literature, there is a growing amount of research dealing with the field.
-However, real time avatars are far from perfect, as they are not robust when it comes to an edge cases.
+However, real time avatars are far from perfect, as they are not robust when it comes to edge cases.
 This includes facial gestures in the driving video, objects in the source or target media that make it
 difficult to identify facial boundaries, and many more.
 
 
 % Detection (Importance, ways)
-Note that this limitations can be create visual glitches and distortions that can be detected with the
+Note that these limitations can be create visual glitches and distortions that can be detected with the
 naked eye as well as by software, and therefore can be utilized for deepfakes detection. This observation
 drives a growing amount of research dealing with those inaccuracies for dual use -- correcting them in
 order to improve the deepfakes' credibility, or exploiting them to distinguish deepfakes from real content.
@@ -211,28 +211,35 @@ implementation, we also provide a method to utilize them for deepfakes detection
 
 \section{Methods} \label{methods}
 
-Given the growing need for IDS and IPS for securing ICS, there is a growing need to create
-quality datasets for training and evaluating anomaly detection models. This includes setting up
-testbeds, collecting data from them, and usually simulating data to provide anomalies. In this section
-we present the main datasets developed for the purpose of training and evaluating such models in the
-ICS domain.
+In this section we will briefly introduce the implementation on which our work relies on, and the
+First Order Model, on which the Avatarify Python consists of.
+
+% Detailed explanation on First Order Model
+\subsection{First Order Model}
+
+% Explanation on the Avatarify
+\subsection{Avatarify Python}
+
 
 \pagebreak{}
 
 \section{Experiments and Results} \label{experiments and results}
 
-Below is a comparison table between the abovementioned ICS datasets. The purpose of the table is to be a
-decision support tool in selecting a suitable dataset for conducting anomalies detection studies in the
-ICS field. Note that only BATADAL dataset does not cointain the class labels for the test set.
+In this section we introduce the experiments and results. A detailed explanation of the
+visual glitches and distortions that we managed to create and detect is provided, as well
+as the results of our proposed method to utilize them for deepfakes detection.
+
+% examples for edge cases on the Avatarify
+\subsection{Avatarify Python Robustness}
+
+\subsection{Failures Detection}
+
 
 \pagebreak{}
 
 \section{Discussion} \label{discussion}
 
-Today, ICS are an integral part of the day-to-day operations of many industries and critical infrastructures,
-from power generation, through water treatment, and to oil and gas processing. Cyber attacks against ICS would
-lead to disruption to controlling those critical infrastructures and result in harmful physical damage to plants,
-environment and humans. According to ICS-CERT, the ICS-targeted attacks are continuously increasing from year to year~\cite{DBLP:conf/dsn/FengLC17}.
+Today, deepfakes are bla bla bla..
 
 \pagebreak{}
 
