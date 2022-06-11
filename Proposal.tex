@@ -99,7 +99,7 @@
 Engineering}\\[0.5cm] 
 
 % Minor heading such as course title 
-\textsc{\large Project in Advanced Topics in Cyber Security}\\[0.5cm] 
+\textsc{\large Project in Offensive Artificial Intelligence Course}\\[0.5cm] 
 
 % Minor heading such as course title
 
@@ -108,7 +108,7 @@ Engineering}\\[0.5cm]
 %----------------------------------------------------------------------------------------
 
 \HRule \\[0.4cm]
-{ \huge \bfseries OAI Final Project - Robustness of Real Time deepfakes } \\[0.4cm] 
+{ \huge \bfseries OAI Final Project - Robustness of Real Time Deepfakes } \\[0.4cm] 
 % Title of your document 
 \HRule \\[1.5cm]
  
@@ -124,21 +124,21 @@ Amit Kama % Your name
 ~
 \begin{minipage}{0.4\textwidth}
 \begin{flushright} \large \emph{Author:} \\
-Ron Magen % Your Name
+Oren Shvartzman % Your Name
 \end{flushright}
 \end{minipage}\\[1cm]
 
-\begin{minipage}{0.4\textwidth}
-\begin{flushleft} \large \emph{Author:}\\
-Barak Yacouel % Your name
-\end{flushleft}
-\end{minipage}
-~
-\begin{minipage}{0.4\textwidth}
-\begin{flushleft} \large \emph{ }\\
-  % Your name
-\end{flushleft}
-\end{minipage}\\[2cm]
+% \begin{minipage}{0.4\textwidth}
+% \begin{flushleft} \large \emph{Author:}\\
+% Barak Yacouel % Your name
+% \end{flushleft}
+% \end{minipage}
+% ~
+% \begin{minipage}{0.4\textwidth}
+% \begin{flushleft} \large \emph{ }\\
+%   % Your name
+% \end{flushleft}
+% \end{minipage}\\[2cm]
     
 % If you don't want a supervisor, uncomment the two lines below and remove the
 % section above \Large \emph{Author:}\\
@@ -166,465 +166,40 @@ Barak Yacouel % Your name
 
 \section{Introduction} \label{introduction}
 
-Industrial control system (ICS) is a general term that encompasses several types
-of control systems and associated instrumentation used for industrial process
-controls. Control systems can range in size from a few modular panel-mounted
-controllers to large interconnected and interactive distributed control systems
-(DCSs) with many thousands of field connections. Larger systems are usually
-implemented by supervisory control and data acquisition (SCADA) systems, or DCSs,
-and programmable logic controllers (PLCs), though SCADA and PLC systems are
-scalable down to small systems with few control loops.
+% Deepfakes and deepfakes in recent years
+% What is First Order Model
+% It has limitations - drawbacks, that in the literature, there is a growing amount of research dealing with the field.
+% Detection (Importance, ways)
+% What will be in the report
 
-ICSs are extensively used in many industries, including power generation, water
-treatment, oil and gas processing, industrial manufacture, and telecommunications.
-Most systems use information obtained from Remote Terminal Units (RTUs) to generate
-commands automatically or manually by a human operator. The commands are passed
-back to the remote end units on the basis of some communication infrastructure.
 
-% % Multi-level Anomaly Detection in Industrial Control Systems via Package Signatures and LSTM networks
-% As stated in~\cite{DBLP:conf/dsn/FengLC17}, traditional ICS are not networked and hence are considered to be
-% well protected by so called 'air-gapped' separation. To further promote efficient
-% remote control and higher throughput, smart ICT technologies have been widely merged
-% into ICS where most of components are old, originally insecure by design and hard to
-% upgrade. Such evolution of ICS builds up a connection between physical and cyber
-% worlds, but also makes them vulnerable to cyber attacks.
-
-As stated in~\cite{DBLP:conf/dsn/FengLC17}, "cyber attacks against ICS would lead to disruption to controlling those critical
-infrastructures and result in harmful physical damage to plants, environment and
-humans. According to ICS-CERT, the ICS-targeted attacks have been continuously
-increasing in the past few years. There were 73 incidents reported to ICS-CERT
-by trusted industrial partners in 2013, then 245 reported in 2014 and 295 incidents
-in 2015".
-
-According to~\cite{DBLP:conf/dsn/FengLC17}, the typical architecture of modern ICS roughly consists of three networks;
-a corporate network which provides business to business and business to customer services, a control network, which
-receives and processes data from field devices and responses with proper control commands, and lastly, a field network
-which is the fusion of PLCs, actuators and sensors for measurement data transmission and the direct control of industrial processes.
-They also stated that cyber attacks against ICS often start with gaining access to the the corporate network,
-which is usually exposed to the internet, then propagate virus across the whole network
-in search of valuable targets, and finally sabotage control programs running on field devices. The
-first widely documented ICS cyber attack was Stuxnet, disclosed in 2011. In this case,
-the virus was introduced by a removal drive, and eventually managed to change the
-program controlling field devices.
-
-% Two more recent examples are the security breach
-% to a German steel mill initiated by spearphishing emails in 2014, and the attack leading
-% to massive outage for Ukrainian power companies in 2015.
-\pagebreak{}
-
-One Promising ICS security solution is an anomaly detection system, which monitors the network traffic
-and field devices' data logs, and utilize this information in order to warn of a possible intrusions.
-Although anomaly detection is the basis of many security systems developed in recent years, only a few
-of them are specifically designed to secure ICS systems. Therefore, there is an urgent need of effective
-ICS specific anomaly detection systems.
-
-% A Statistical Analysis Framework for ICS Process Datasets
-In light of this, there is a significant need to create datasets relevant to ICS and from various fields,
-that will be used to train and test those systems. As stated in~\cite{DBLP:conf/ccs/TurrinETC20}, "a number of datasets to design and study anomaly
-detectors have been published (e.g., BATADAL, SWaT, and WADI). Those datasets consist of multivariate time series
-of sensor readings that occurred in an ICS (real plant, testbed, or simulation). Datasets for ICS anomaly detection
-are often provided in different data captures. Usually, there are at least two data captures. The first (generally
-used as a Training set) contains data collected during normal operating conditions. The second (generally used as the
-Test set) contains data collected while attacks are occurring".
-
-% Sensor data contained in ICS datasets depends on the control logic configuration applied to the system. According to
-% this system configuration, data can be differently distributed even for normal operating conditions between the two
-% datasets. This can causes false alarms in anomaly and attack detection. According to~\cite{DBLP:conf/ccs/TurrinETC20}, no systematic
-% analysis of the ICS dataset was done before although it might have a big (overlooked) impact on the performance of
-% the detection schemes. Indeed, from results obtained by state-of-the-art detectors for ICS in terms of Recall
-% score (i.e., True Positive Rate), rarely Recall surpasses 70\% meaning that 3 alarms are missing every 10 anomalies.
-% This is a non-negligible missrate, especially if we compare this result to what the application of Machine Learning
-% techniques achieves in other classification tasks.
-
-% Probabilistic Attack Sequence Generation and Execution Based on MITRE ATT&CK for ICS Datasets
-Collection and creation of datasets for security research in ICSs are not easy tasks.
-As stated in~\cite{DBLP:conf/uss/ChoiYM21}, when doing so, it is essential
-to construct and reproduce various attack situations. When leveraging a dataset
-for anomaly detection, both a normal dataset and an abnormal dataset should be
-provided for learning and evaluation. Without an abnormal dataset that includes
-attack-related data, it cannot be evaluated whether it trains properly or detects
-anomalies. Such a dataset is helpful for research on the following areas:
-development of data-driven defense technologies, such as machine learning;
-testing of various attack situations; and performance evaluation according to the
-desired purpose.
-
-In this work, we present a survey of open and available ICS datasets from various
-domains, which can be used to implement anomaly detection algorithms in
-ICS-related studies. We provide the needed background to use each dataset, and a
-demonstration of how to implement machine learning algorithms to the main one.
-Lastly, we present a comparison table between the various datasets, which allows
-the selection of appropriate datasets to perform anomaly detection tasks.
 
 \pagebreak{}
 
-\section{ICS Datasets} \label{datasets}
+\section{Methods} \label{methods}
+
 Given the growing need for IDS and IPS for securing ICS, there is a growing need to create
 quality datasets for training and evaluating anomaly detection models. This includes setting up
 testbeds, collecting data from them, and usually simulating data to provide anomalies. In this section
 we present the main datasets developed for the purpose of training and evaluating such models in the
 ICS domain.
-%----------------------------------------------------------------------------------------------------------
 
-\subsection{BATADAL} \label{BATADAL}
-% https://ieeexplore-ieee-org.ezproxy.bgu.ac.il/stamp/stamp.jsp?tp=&arnumber=9317834
-% https://dl-acm-org.ezproxy.bgu.ac.il/doi/pdf/10.1145/3411498.3419961
+\pagebreak{}
 
-BATADAL dataset was released with 'The Battle Of The Attack Detection Algorithms',
-a competition to detect cyber attacks on water distribution networks~\cite{DBLP:conf/ccs/TurrinETC20}. The BATADAL
-dataset represents a water distribution network consisting of seven storage tanks
-with eleven pumps and five valves, controlled by nine PLCs. The network was generated
-with epanetCPA, a MATLAB toolbox that allows the injection of cyber attacks and
-simulates the network's response to the attacks. The test dataset contains 2,089
-records (from 87 days of recording) with seven attacks~\cite{DBLP:journals/corr/abs-1907-01216}. The dataset is divided into
-three data chunks: the first contains the sensor readings collected during 365 days
-of normal operations, the second and the third contain the sensor data collected
-during 14 cyber attacks. BATADAL dataset features a collection of 43 sensors and
-actuators, i.e., water levels, the pressure at pumping stations, flow, and actuator
-status. There are two available versions of the dataset, the original one, which
-contains replay attacks aimed to conceal the true system state, and the second one, which
-contains sensor readings without concealment. The second version consists of two different Test sets.
+\section{Experiment and Results} \label{experiment and results}
 
-
-\subsection{HAI} \label{Hai}
-% https://www.usenix.org/conference/cset20/presentation/shin
-% https://www.usenix.org/system/files/cset20-paper-choi.pdf
-% https://dl-acm-org.ezproxy.bgu.ac.il/doi/pdf/10.1145/3474718.3474719
-% https://github.com/icsdataset/hai
-% https://www.kaggle.com/icsdataset/hai-security-dataset
-
-HIL-based Augmented ICS (HAI) dataset was collected in 2017 from a realistic ICS
-testbed augmented with a simulator that emulates steam-turbine
-power generation and pumped-storage hydropower generation. 
-There are three versions of HAI - HAI 1.0, HAI 20.07 and HAI 20.03. 
-Two major versions of HAI datasets have been released so far. Each dataset
-consists of several CSV files, and each file satisfies time continuity. HAI 21.03
-was released in 2021, and is based on a more tightly coupled HIL simulator to
-produce clearer attack effects with additional attacks. This provides more
-quantitative information and covers a variety of operational situations and
-better insights into the dynamic changes of the physical system~\cite{DBLP:conf/uss/ShinLYK20}. 
-
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.41]{images/hai.png}
-  \par\end{centering}
-  \caption{\label{fig:hai}HAI framework~\cite{DBLP:conf/uss/ChoiCYMK20}.}
-\end{figure}
-
-
-\subsection{SWaT} \label{SWAT}
-% https://ieeexplore-ieee-org.ezproxy.bgu.ac.il/stamp/stamp.jsp?tp=&arnumber=9317834
-% https://dl-acm-org.ezproxy.bgu.ac.il/doi/pdf/10.1145/3411498.3419961
-% https://link-springer-com.ezproxy.bgu.ac.il/content/pdf/10.1007%2F978-3-030-61108-8_39.pdf
-
-The Secure Water Treatment (SWaT) plant is a scaled-down water treatment plant which was built at the Singapore
-University of Technology and Design. It consists of six steps process in which the water is gradually filtrated
-and purified, and is able to produce five US gallons/hr of filtered water. Each step is equipped with a precise
-number of sensors and actuators. The dataset contains seven days of recording under normal conditions and four
-days during which 36 attacks were conducted~\cite{DBLP:journals/corr/abs-1907-01216}. There are many versions
-of the SWaT dataset, opening also a fragmentation problem when using it as a benchmark for the detection algorithms.
-We refer to the network traffic as the pcap dump of the network communications and as physical data the value of
-the sensors and actuators recorded~\cite{DBLP:conf/ccs/TurrinETC20}.
-
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.7]{images/swat1.png}
-  \par\end{centering}
-  \caption{\label{fig:swat1}SWaT framework.}
-\end{figure}
-
-\begin{figure}[!htb]
-  \begin{centering}
-      \includegraphics[scale=0.441]{images/swat2.png}
-  \par\end{centering}
-  \caption{\label{fig:swat2}SWaT framework.}
-\end{figure}
-
-
-\subsection{WADI} \label{WADI}
-% https://ieeexplore-ieee-org.ezproxy.bgu.ac.il/stamp/stamp.jsp?tp=&arnumber=9317834
-% https://dl-acm-org.ezproxy.bgu.ac.il/doi/pdf/10.1145/3411498.3419961
-% https://link-springer-com.ezproxy.bgu.ac.il/content/pdf/10.1007%2F978-3-030-61108-8_39.pdf
-
-The WADI dataset has been collected from a scaled-down water distribution testbed and compiled by the developers of
-SWaT. The testbed consists of large water tanks that supply water to consumer tanks. The dataset contains 16 attacks
-whose goal is to stop the water supply to the consumer tanks~\cite{DBLP:journals/corr/abs-1907-01216}. More specifically, WADI is a realistic ICS testbed
-that reproduces a water distribution network. It comprises two elevated reservoir tanks, six consumer tanks, and a
-return tank (for water recycling purposes). It is controlled by 103 sensors and actuators connected to three PLCs.
-Each PLC controls one of the following stages: P1 (primary supply and analysis), P2 (elevated reservoir with domestic
-grid and leak detection), and P3 (return process). The dataset is divided into two data chunks, the first contains 14
-days of normal operations, the second contains 15 attacks on the physical process that occurred over two days of
-operations. There are two versions of the WADI dataset available on request. As reported by the authors of the dataset,
-the newer version resolves some problems of the data contained in the first version. The new version refers to the same
-testbed run but with about 35\% fewer lines~\cite{DBLP:conf/ccs/TurrinETC20}. The dataset is significantly larger than the SWaT and BATADAL
-datasets; there are 1,209,610 data points in the training set and 126 features~\cite{DBLP:journals/corr/abs-1907-01216}.
-
-\subsection{EPIC} \label{EPIC}
-% https://link-springer-com.ezproxy.bgu.ac.il/content/pdf/10.1007%2F978-3-030-61108-8_39.pdf
-% https://itrust.sutd.edu.sg/testbeds/electric-power-intelligent-control-epic/
-% https://itrust.sutd.edu.sg/wp-content/uploads/sites/3/2019/02/EPIC_technical_details-231018-v1.2.pdf
-
-The EPIC dataset describes the operational Electric Power and Intelligent Control (EPIC) testbed. 
-EPIC is an electric power testbed that mimics a real world power system in small scale smart-grid. Comprising
-four stages, namely Generation, Transmission, Micro-grid, and Smart Home, EPIC is capable of generating up to 72 kVA power.
-It is designed to enable cyber security researchers to conduct experiments and assess the effectiveness of novel cyber
-defense mechanisms. Physical process: EPIC has two motor-driven generators (Generator1 and Generator2), Photovoltaic (PV)
-panels, Battery system-with state-of-charge (SOC) based control and Load demand~\cite{iTrust}.\\
-
-
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.0721]{images/epic1.png}
-  \par\end{centering}
-  \caption{\label{fig:epic1}EPIC Control Room.}
-\end{figure}
-
-\begin{figure}[!htb]
-  \begin{centering}
-      \includegraphics[scale=0.12]{images/epic2.png}
-  \par\end{centering}
-  \caption{\label{fig:epic2}EPIC Generator and Battery Room.}
-\end{figure}
-
-
-\subsection{D1 - Power System Datasets} \label{Power System Datasets}
-% https://sites.google.com/a/uah.edu/tommy-morris-uah/ics-data-sets
-% https://www.impactcybertrust.org/dataset_view?idDataset=1290
-
-% Dataset 1: Power System Datasets
-
-Created by Uttam Adhikari, Shengyi Pan, and Tommy Morris in collaboration with Raymond Borges and Justin Beaver
-of Oak Ridge National Laboratories (ORNL). The datasets include measurements of data logs from Snort (IPS software)
-and are related to electric transmission system normal, disturbance, control and cyber attack behaviors~\cite{Tommymorris}. 
-There are three datasets contained in this project, which are made from one initial dataset consisting of 15 sets
-with 37 power system event scenarios in each. The multiclass datasets are in arff format. The 37 scenarios are
-divided into Natural Events (8), No Events (1) and Attack Events (28)~\cite{6900095}. 
-The dataset was randomly sampled and transformed into three different datasets:
-
-\begin{enumerate}
-  \item Binary - divides between Attack and No attack
-  \item Three-class - divides between Natural, No events, and Attacks
-  \item Multiclass datasets - divides between every possible event
-\end{enumerate}
-
-As can be seen in the attached jupyter notebook~\cite{Jupyter}, we implemented classification of binary classes on this dataset,
-which as maintained, contains power system data. First, we read the data and then applied basic pre-processing
-on the dataset which includes handling with missing values, and transforming the features data to a suitable
-format (which includes discretization if needed). Afterwards, we have done a randomized division of the dataset
-to train set and test set. Having train and test sets, we have done the following for three machine-learning
-and deep-learning algorithms:
-We read the data, definied parameters and hyper parameter optimization using Grid Search. We then chose the best
-model and used it to predict the classes on the test set. Lastly, we presented the results using various known
-metrics, such as precision and recall for each class.
-The algorithms we have chosen are:
-
-\begin{enumerate}
-  \item Linear SVM Model
-  \item Bagging classifier of decision trees
-  \item Basic Deep-learning MLP(Multi layer perceptron) network
-\end{enumerate}
-
-Below is a summary of the main results we obtained (N = Normal; A = Anomaly).
-
-\begin{center}
-  \begin{tabular}{cccc}
-  \hline
-  Algorithm / Metric & Precision (N, A) & Recall (N, A) & Accuracy \\
-  \hline
-  Linear SVM & 0.75, 0.52 & 0.99, 0.03 & 75\% \\
-  \hline
-  Bagging of DT's & 0.9, 0.89 & 0.9, 0.89 & 92\% \\
-  \hline
-  MLP & 0.85, 0 & 0.85, 0 & 74\% \\
-  \hline
-  \end{tabular}
-  \label{table1}
-\end{center}
-
-% \subsection{Gas Pipeline Datasets} \label{Gas Pipeline Datasets}
-% % https://sites.google.com/a/uah.edu/tommy-morris-uah/ics-data-sets
-% These datasets were created in collaboration with Justin Beaver and Raymond Borges of Oak Ridge National Laboratories (ORNL). Raw data logs were provided to Justin by the MSU team and the ORNL team formatted these logs into datasets.
-
-% ORNL Formatted SCADA Gas Pipeline Datasets
-
-% Please cite the following paper if using these datasets.
-
-% Beaver, Justin M., Borges-Hink, Raymond C., Buckner, Mark A., "An Evaluation of Machine Learning Methods to Detect Malicious SCADA Communications," in the Proceedings of 2013 12th International Conference on Machine Learning and Applications (ICMLA), vol.2, pp.54-59, 2013. doi: 10.1109/ICMLA.2013.105 link
-
-\subsection{D3 - Gas Pipeline and Water Storage Tank} \label{Gas Pipeline and Water Storage Tank}
-% https://sites.google.com/a/uah.edu/tommy-morris-uah/ics-data-sets
-% https://dl.acm.org/doi/pdf/10.1145/2179298.2179327?casa_token=JS1r4x824kYAAAAA:p9ZsH8v6yrZWX47vSkAnD-cSh7kmOZqaOe3H2Lv5IC0Vcz6-OnM_ItUvPkvtqbWCsPeBxog7R9H9
-
-Wei Gao and Tommy Morris have created a datasets of cyber attacks against two laboratory scale ICSs;
-a gas pipeline and water storage tank. They created a gas pipeline testbed which is used to move natural gas and other similar products to the market. 
-The gas pipeline testbed represents a typical SCADA system embracing an MTU, RTU, and an HMI. The gas pipeline control system contains an air pump that pumps air
-into the pipeline, a pressure sensor that allows pressure visibility at the pipeline and remotely on the HMI, a release valve and a solenoid release
-valve to loose air pressure from the pipeline. The allowed pressure range in the pipeline is from 0 to 20 PSI (pound per square inch), with a margin
-of 10\% which fixes the maximum accepted pressure to 22 PSI. The pipeline operates in three principal modes: the first mode is characterized by a very
-low pressure maintained around 0.1 PSI; the second mode pressure maintained around 10 PSI (the accepted range lays between 9 and 11 PSI); and the third mode
-should maintain the pressure around 20 PSI (the accepted range is 18 to 22 PSI). The high pressure (greater than 22 PSI) and the transitional states
-between different modes are considered as anomalies.
-They reviewed various cyber attacks by their influence on the gas system at each mode, and by that collected data into a dataset from their testbed.
-To create this dataset, traffic between the Master Terminal Unit (MTU) and the slave Remote Terminal Unit (RTU) was recorded in a file, that contains
-28 attacks/anomalies against the gas pipeline.
-Each line in the new dataset represents one network transaction.
-the format of the final dataset file is arff~\cite{DBLP:journals/tii/NaderHB14}.
-
-
-\subsection{D4 - New Gas Pipeline} \label{New Gas Pipeline}
-% https://sites.google.com/a/uah.edu/tommy-morris-uah/ics-data-sets
-
-Ian Turnipseed developed a new set of datasets with more randomness. These samples are originated only from the gas pipeline control system.
-This is an improved version of the same dataset in 3. 
-Ian changes the previous dataset structure(one arff dataset) into a raw dataset and an arff dataset:
-
-\begin{enumerate}
-  \item The raw dataset contains the whole MODBUS frame, which was not included in the previous dataset.
-  \item The arff dataset contains a deep packet inspection of the MODBUS frame.
-\end{enumerate}
-
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.9]{images/D4.png}
-  \par\end{centering}
-  \caption{\label{fig:d4}New Gas Pipeline Scheme.~\cite{IanDefenseSlides}}
-\end{figure}
-
-Water Storage:
-This dataset comes from the daily measures of sensors in an urban waste water treatment plant. Each sample contains
-38 attributes related to the measurements of several important components in the water such as input zinc, input pH,
-input biological demand of oxygen, input suspended solids, input conductivity, input volatile suspended solids,
-input sediments to secondary settler, output chemical demand of oxygen, output volatile suspended solids, and other
-attributes. The values of each attribute vary in a different manner, i.e., the range of input pH is between 6.9 and
-8.7, input zinc between 0.1 and 33.5, input conductivity between 651 and 3230, input suspended solids between 98 and
-2008, and input sediments to secondary settler between 0 and 3.5. The train set contains 513 samples related to four
-different normal situations, whereas the test set encloses measurements of abnormal situations such as after storms
-or when solids overload. The water treatment dataset contains 2.95\% of missing attributes~\cite{morris2015industrial}.\\
-
-% \begin{center}
-%   \begin{tabular}{cc}
-%   \hline
-%   Data Set Characteristics & Multivariate \\
-%   \hline
-%   Attribute Characteristics & Integer, Real \\
-%   \hline
-%   Associated Tasks & Clustering \\
-%   \hline
-%   Number of Instances & 527 \\
-%   \hline
-%   Number of Attributes & 38 \\
-%   \hline
-%   Missing Values & N/A \\
-%   \hline
-%   Date Donated & 1993-06-01 \\
-%   \hline
-%   \end{tabular}
-%   \label{table1}
-% \end{center}
-
-\subsection{D5 - Energy Management System Data} \label{Energy Management System Data}
-% https://sites.google.com/a/uah.edu/tommy-morris-uah/ics-data-sets
-
-The data is arranged in rows where each row is a unique event, except the first row which gives names of the columns.
-The dataset includes 30 days of events as logged by an Energy Management System (EMS)
-at an investor owned utility in the United States of America. The data in the dataset has been anonymized by changing the
-names of operators, devices, and facilities~\cite{Tommymorrisd5}. 
-
-
-\subsection{Cyber Security MODBUS} \label{CYBER-SECURITY MODBUS}
-% https://ieee-dataport.org/documents/cyber-security-modbus-ics-dataset
-
-This dataset was generated on a small-scale process automation scenario using MODBUS/TCP equipment, for research
-on the application of ML techniques to cybersecurity in ICSs. The testbed emulates a CPS
-process controlled by a SCADA system using the MODBUS/TCP protocol. The PLC communicates horizontally with the
-RTU, providing insightful knowledge of how this type of communications may have an effect on the overall system.
-The PLC also communicates with the Human-Machine Interface (HMI) controlling the system. The testbed is depicted
-in Figure 7~\cite{IEEE}.
-
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.27]{images/Modbus.png}
-  \par\end{centering}
-  \caption{\label{fig:modbus}Cyber Security MODBUS.}
-\end{figure}
-
-
-The dataset contains different scenarios that control different industrial processes. For each scenario, files
-are provided to capture normal communication and communication with anomalies. The data is in csv format and
-contains a collection of network packets (pcaps) from wireshark, with 12 fields which are provided in wireshark
-packet inspection information.
-
-
-\subsection{WUSTL-IIOT-2018} \label{WUSTL-IIOT-2018}
-% https://www.cse.wustl.edu/~jain/iiot/index.html
-
-This dataset was built using the SCADA system testbed in order to emulate real-world industrial systems closely.
-In this testbed, the focus was on reconnaissance attacks where the network is scanned for possible vulnerabilities
-to be used for later attacks. In order to construct it, scan tools have been used to inspect the topology of the victim
-network (in this case, the testbed), and identify the devices in the network as well as their vulnerabilities.
-There are 5 types of attacks that have been carried out against the testbed, among them are exploit attacks, port
-scanning, and more~\cite{cse}.
-
-All network traffic (normal and abnormal traffic) was monitored by the Audit Record Generation and Utilization System
-(ARGUS) tool. The monitored traffic is captured and stored in a "csv" file.
-
-This dataset has been collected during 25 hours, and contains about 7M samples, while around 6\% of them corresponds
-with cyber attacks and the other ones corresponds with normal traffic. The data contains 25 networking features.
-
-
-\subsection{Electra} \label{Electra}
-% http://perception.inf.um.es/ICS-datasets/
-
-Electra is an ICS dataset, which has been generated from the network traffic of an electric traction substation
-running in normal and under attack ways. The Electra dataset has been created in a realistic scenario with
-industrial devices such as Programmable-Logic Controllers (PLCs) and a SCADA system that are controlled by
-well-known industrial protocols such as S7Comm and MODBUS~\cite{gomez2019generation}.
-The Electra dataset models the behavior of an electric traction substation used in a real high-speed railway
-area. The main purpose of this testbed is to allow converting the electric power of the general network to
-voltage, current, and frequency conditions to supply railways or trams. This system can be used to convert
-the three-phase alternating current into single phase with the lower frequency needed for railway electrification
-systems. To accomplish its task, the electric traction substation has 5 PLCs (1 master PLC and 4 slave PLCs) and
-a SCADA system. Additionally, the testbed has a switch (D5) for the interconnection of the different devices and
-a firewall (D4) to protect the substation from attacks coming from outside. The testbed devices communicate through
-control protocols following a master-slave architecture, where the master initiates the communication requesting
-some data and a slave response with information requested. The network communication is carried out through the
-following protocols: MODBUS TCP, OPC and S7Comm. The SCADA system consists of a Nanobox (A1) and an HMI (A4) that
-communicates through the OPC protocol. The SCADA acts as a master of both MODBUS slaves A2 and A3. Similarly,
-regarding the S7Comm protocol, D1 PLC acts as the master of A1, D2 and D3 PLCs. The data contains features
-regarding the network packets received on the testbed devices.
-
-
-\section{Datasets Comparison} \label{comparison}
 Below is a comparison table between the abovementioned ICS datasets. The purpose of the table is to be a
 decision support tool in selecting a suitable dataset for conducting anomalies detection studies in the
 ICS field. Note that only BATADAL dataset does not cointain the class labels for the test set.
 
-\includepdf[landscape=true]{table.pdf}
-
 \pagebreak{}
 
-\section{Summary} \label{summary}
+\section{Discussion} \label{discussion}
+
 Today, ICS are an integral part of the day-to-day operations of many industries and critical infrastructures,
 from power generation, through water treatment, and to oil and gas processing. Cyber attacks against ICS would
 lead to disruption to controlling those critical infrastructures and result in harmful physical damage to plants,
 environment and humans. According to ICS-CERT, the ICS-targeted attacks are continuously increasing from year to year~\cite{DBLP:conf/dsn/FengLC17}.
-
-One Promising ICS security solution is an anomaly detection system, which monitors the network traffic
-and field devices' data logs, and utilize this information in order to warn of a possible intrusions.
-Although anomaly detection is the basis of many security systems developed in recent years, only a few
-of them are specifically designed to secure ICS systems. Therefore, there is an urgent need of effective
-ICS specific anomaly detection systems.
-
-In light of this, there is a significant need to create datasets relevant to ICS and from various fields,
-that will be used to train and test those systems.
-In this work, we presented a survey of open and available ICS datasets from various
-domains, which can be used to implement anomaly detection algorithms in
-ICS-related studies.
-
-We provided the needed background to use 12 significant datasets, and a
-demonstration of how to implement machine learning algorithms to the main one.
-Finally, we summarized the topic with a table of comparison between those datasets, which we hope will
-serve as a decision support tool in selecting a suitable dataset for conducting anomalies detection
-studies in the ICS field.
 
 \pagebreak{}
 
