@@ -211,41 +211,43 @@ implementation, we also provide a method to utilize them for deepfakes detection
 
 \section{Methods} \label{methods}
 
-In this section we will briefly introduce the implementation on which our work relies on, and the
-First Order Model, on which the Avatarify Python consists of.
+In this section we will briefly introduce the First Order Motion Model, on which the avatarify implementation
+whose robustness we evaluated, consists of. In addition, we will describe our proposed method for failures detection.
 
 % Detailed explanation on First Order Model
 \subsection{First Order Motion Model}
 % From DBLP:journals/corr/abs-2003-00196
 % The method, our plan to evaluate it
-
-
 %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
 % FIXME: Do we want to add figures from the paper?
-First Order Motion Model for Image Animation
-
 % Abstract
+In~\cite{DBLP:journals/corr/abs-2003-00196}, Siarohin et al. propose the First Order Motion Model for Image
+Animation, which addresses the task of generating a video sequence so that an object in a source image
+is animated according to the motion of a driving video.
 
-% FIXME: rephrase
-In~\cite{DBLP:journals/corr/abs-2003-00196}, Siarohin et al. propose a framework which addresses the problem
-of generating a video sequence so that an object in a source image is animated according to the motion of a
-driving video, without using any annotation or prior information about the specific object to animate.
+Once their proposed method is trained on a set of videos depicting objects in the same category, it can be
+applied to any object in this category, without using annotations or prior knowledge about the object to be
+animate.
+This is done using a self-supervised formulation, for detaching appearance information and motion information
+from each other. The method also support complex motions, using representation consisting of a set of learned
+keypoints along with their local affine transformations.
 
-Once trained on a set of videos
-depicting objects of the same category (e.g. faces, human bodies), our method can be applied to any
-object of this class. To achieve this, we decouple appearance and motion information using a self-supervised
-formulation. To support complex motions, we use a representation consisting of a set of learned keypoints
-along with their local affine transformations. A generator network models occlusions arising during target
-motions and combines the appearance extracted from the source image and the motion derived from the driving
-video. Our framework scores best on diverse benchmarks and on a variety of object categories.
+The model's mathematical formulation describes motion between two frames and is efficiently computed by
+deriving a first order Taylor expansion approximation. Thus, motion is represented as a set of keypoints
+displacements and local affine transformations.
+Finally, a generator network combines the appearance extracted from the source image with the motion
+representation of the driving video. First Order Motion Model outperforms state of the art on all the
+benchmarks on a variety of object categories.
+
 
 % From the Introduction
-In the literature, most methods tackle this problem by assuming strong priors on the object representation
-(e.g. 3D model) [4] and resorting to computer graphics techniques [6, 33]. These approaches can be referred
-to as object-specific methods, as they assume knowledge about the model of the specific object to animate.
+% FIXME: rephrase
+In the literature, most methods tackle image animation task by assuming strong priors on the object
+representation and resorting to computer graphics techniques. These approaches can be referred to as
+object-specific methods, as they assume knowledge about the model of the specific object to animate.
 
+% FIXME: rephrase
 Recently, deep generative models have emerged as effective techniques for image animation and video
 retargeting [2, 41, 3, 42, 27, 28, 37, 40, 31, 21]. In particular, Generative Adversarial Networks (GANs)
 [14] and Variational Auto-Encoders (VAEs) [20] have been used to transfer facial expres- sions [37] or
@@ -258,29 +260,20 @@ Monkey-Net encodes motion information via keypoints learned in a self-supervised
 the source image is animated according to the corresponding keypoint trajectories estimated in the driving
 video. The major weakness of Monkey-Net is that it poorly models object appearance transformations in the
 keypoint neighborhoods assuming a zeroth order model (as we show in Sec. 3.1). This leads to poor generation
-quality in the case of large object pose changes (see Fig. 4). To tackle this issue, we propose to use a
-set of self-learned keypoints together with local affine transformations to model complex motions. We
-therefore call our method a first-order motion model. Second, we introduce an occlusion-aware generator,
-which adopts an occlusion mask automatically estimated to indicate object parts that are not visible in the
-source image and that should be inferred from the context. This is especially needed when the driving video
-contains large motion patterns and occlusions are typical. Third, we extend the equivariance loss commonly
-used for keypoints detector training [18, 44], to improve the estimation of local affine transformations.
-Fourth, we experimentally show that our method significantly outperforms state-of-the-art image animation
-methods and can handle high-resolution datasets where other approaches generally fail. Finally, we release
-a new high resolution dataset, Thai-Chi-HD, which we believe could become a reference benchmark for evaluating
-frameworks for image animation and video generation.
+quality in the case of large object pose changes (see Fig. 4).
+
+To tackle this issue, we propose to use a set of self-learned keypoints together with local affine
+transformations to model complex motions. We therefore call our method a first-order motion model. Second,
+we introduce an occlusion-aware generator, which adopts an occlusion mask automatically estimated to indicate
+object parts that are not visible in the source image and that should be inferred from the context. This is
+especially needed when the driving video contains large motion patterns and occlusions are typical. Third,
+we extend the equivariance loss commonly used for keypoints detector training [18, 44], to improve the
+estimation of local affine transformations. Fourth, we experimentally show that our method significantly
+outperforms state-of-the-art image animation methods and can handle high-resolution datasets where other
+approaches generally fail. Finally, we release a new high resolution dataset, Thai-Chi-HD, which we believe
+could become a reference benchmark for evaluating frameworks for image animation and video generation.
 
 % FIXME: Add the method
-
-% Conclusions
-We presented a novel approach for image animation based on keypoints and local affine transforma- tions. Our
-novel mathematical formulation describes the motion field between two frames and is efficiently computed by
-deriving a first order Taylor expansion approximation. In this way, motion is described as a set of keypoints
-displacements and local affine transformations. A generator network combines the appearance of the source image
-and the motion representation of the driving video. In addition, we proposed to explicitly model occlusions in
-order to indicate to the generator network which image parts should be inpainted. We evaluated the proposed
-method both quantitatively and qualitatively and showed that our approach clearly outperforms state of the art
-on all the benchmarks.
 
 
 %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -288,6 +281,7 @@ on all the benchmarks.
 
 % Explanation on our proposed method
 \subsection{Failures Detection Method}
+\subsubsection{Facial Detection with Dlib}
 
 
 % \pagebreak{}
@@ -301,117 +295,121 @@ as the results of our proposed method to utilize them for deepfakes detection.
 % examples for edge cases on the Avatarify
 \subsection{First Order Model Robustness}
 
+\pagebreak{}
+
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/‏‏Amit_lips_cage.PNG}
+      \includegraphics[scale=0.25]{images/‏‏Amit_lips_cage.PNG}
   \par\end{centering}
   \caption{\label{fig:Amit_lips_cage}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/‏‏Amit_lips_freeman.PNG}
+      \includegraphics[scale=0.25]{images/‏‏Amit_lips_freeman.PNG}
   \par\end{centering}
   \caption{\label{fig:Amit_lips_freeman}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/‏‏Amit_smile_cage.PNG}
+      \includegraphics[scale=0.25]{images/‏‏Amit_smile_cage.PNG}
   \par\end{centering}
   \caption{\label{fig:Amit_smile_cage}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/‏‏Amit_smile_freeman.PNG}
+      \includegraphics[scale=0.25]{images/‏‏Amit_smile_freeman.PNG}
   \par\end{centering}
   \caption{\label{fig:Amit_smile_freeman}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/‏‏Amit_tilt1_cage.PNG}
+      \includegraphics[scale=0.25]{images/‏‏Amit_tilt1_cage.PNG}
   \par\end{centering}
   \caption{\label{fig:Amit_tilt1_cage}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/‏‏Amit_tilt1_freeman.PNG}
+      \includegraphics[scale=0.25]{images/‏‏Amit_tilt1_freeman.PNG}
   \par\end{centering}
   \caption{\label{fig:Amit_tilt1_freeman}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/‏‏Amit_tilt_cage.PNG}
+      \includegraphics[scale=0.25]{images/‏‏Amit_tilt_cage.PNG}
   \par\end{centering}
   \caption{\label{fig:Amit_tilt_cage}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/‏‏Amit_tilt_freeman.PNG}
+      \includegraphics[scale=0.25]{images/‏‏Amit_tilt_freeman.PNG}
   \par\end{centering}
   \caption{\label{fig:Amit_tilt_freeman}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/‏‏Amit_tongue_cage.PNG}
+      \includegraphics[scale=0.25]{images/‏‏Amit_tongue_cage.PNG}
   \par\end{centering}
   \caption{\label{fig:Amit_tongue_cage}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/‏‏Amit_tongue_freeman.PNG}
+      \includegraphics[scale=0.25]{images/‏‏Amit_tongue_freeman.PNG}
   \par\end{centering}
   \caption{\label{fig:Amit_tongue_freeman}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/Oren_smile_freeman.PNG}
+      \includegraphics[scale=0.25]{images/Oren_smile_freeman.PNG}
   \par\end{centering}
   \caption{\label{fig:Oren_smile_freeman}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/‏‏Oren_smile_cage.PNG}
+      \includegraphics[scale=0.25]{images/‏‏Oren_smile_cage.PNG}
   \par\end{centering}
   \caption{\label{fig:Oren_smile_cage}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/Oren_tilt_cage.PNG}
+      \includegraphics[scale=0.25]{images/Oren_tilt_cage.PNG}
   \par\end{centering}
   \caption{\label{fig:Oren_tilt_cage}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/Oren_tilt_freeman.PNG}
+      \includegraphics[scale=0.25]{images/Oren_tilt_freeman.PNG}
   \par\end{centering}
   \caption{\label{fig:Oren_tilt_freeman}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/Oren_wink_cage.PNG}
+      \includegraphics[scale=0.25]{images/Oren_wink_cage.PNG}
   \par\end{centering}
   \caption{\label{fig:Oren_wink_cage}The effect of...}
 \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
-      \includegraphics[scale=0.29]{images/Oren_wink_freeman.PNG}
+      \includegraphics[scale=0.25]{images/Oren_wink_freeman.PNG}
   \par\end{centering}
   \caption{\label{fig:Oren_wink_freeman}The effect of...}
 \end{figure}
+
+\pagebreak{}
 
 \subsection{Failures Detection}
 
