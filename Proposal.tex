@@ -215,7 +215,7 @@ In this section we will briefly introduce the implementation on which our work r
 First Order Model, on which the Avatarify Python consists of.
 
 % Detailed explanation on First Order Model
-\subsection{First Order Model}
+\subsection{First Order Motion Model}
 % From DBLP:journals/corr/abs-2003-00196
 % The method, our plan to evaluate it
 
@@ -227,9 +227,13 @@ First Order Model, on which the Avatarify Python consists of.
 First Order Motion Model for Image Animation
 
 % Abstract
-Image animation consists of generating a video sequence so that an object in a source image is animated
-according to the motion of a driving video. Our frame- work addresses this problem without using any
-annotation or prior information about the specific object to animate. Once trained on a set of videos
+
+% FIXME: rephrase
+In~\cite{DBLP:journals/corr/abs-2003-00196}, Siarohin et al. propose a framework which addresses the problem
+of generating a video sequence so that an object in a source image is animated according to the motion of a
+driving video, without using any annotation or prior information about the specific object to animate.
+
+Once trained on a set of videos
 depicting objects of the same category (e.g. faces, human bodies), our method can be applied to any
 object of this class. To achieve this, we decouple appearance and motion information using a self-supervised
 formulation. To support complex motions, we use a representation consisting of a set of learned keypoints
@@ -238,7 +242,7 @@ motions and combines the appearance extracted from the source image and the moti
 video. Our framework scores best on diverse benchmarks and on a variety of object categories.
 
 % From the Introduction
-the literature, most methods tackle this problem by assuming strong priors on the object representation
+In the literature, most methods tackle this problem by assuming strong priors on the object representation
 (e.g. 3D model) [4] and resorting to computer graphics techniques [6, 33]. These approaches can be referred
 to as object-specific methods, as they assume knowledge about the model of the specific object to animate.
 
