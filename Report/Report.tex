@@ -196,15 +196,15 @@ difficult to identify facial boundaries, and many more.
 
 
 % Detection (Importance, ways)
-Note that these limitations can be create visual glitches and distortions that can be detected with the
-naked eye as well as by software, and therefore can be utilized for deepfakes detection. This observation
+Note that these limitations can create visual glitches and distortions that can be detected with the
+naked eye as well as by software, and therefore can be utilized for failures detection. This observation
 drives a growing amount of research dealing with those inaccuracies for dual use -- correcting them in
 order to improve the deepfakes' credibility, or exploiting them to distinguish deepfakes from real content.
 
 % What will be in the report
 In this work, we evaluate the robustness of real time deepfakes by implementing first order motion
 model-based avatarify and examining various edge cases on it. After demonstrating failures in the
-implementation, we also provide a method to utilize them for deepfakes detection.
+implementation, we also provide a method to utilize them for failures detection.
 
 
 % \pagebreak{}
@@ -215,7 +215,7 @@ In this section we will briefly introduce the First Order Motion Model, on which
 whose robustness we evaluated, consists of. In addition, we will describe our proposed method for failures detection.
 
 % Detailed explanation on First Order Model
-\subsection{First Order Motion Model}
+\subsection{First Order Motion Model} \label{implementation}
 % From DBLP:journals/corr/abs-2003-00196
 % The method, our plan to evaluate it
 %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -230,7 +230,7 @@ Once their proposed method is trained on a set of videos depicting objects in th
 applied to any object in this category, without using annotations or prior knowledge about the object to be
 animate.
 This is done using a self-supervised formulation, for detaching appearance information and motion information
-from each other. The method also support complex motions, using representation consisting of a set of learned
+from each other. The method also supports complex motions, using representation consisting of a set of learned
 keypoints along with their local affine transformations.
 
 The model's mathematical formulation describes motion between two frames and is efficiently computed by
@@ -245,183 +245,188 @@ task by assuming strong priors on the object representation and resorting to com
 Such methods can be described as object-specific methods, due to the knowledge that they assume on the
 model of the specific object to animate.
 
-Recent works of deep generative models have derived various techniques for image animation and video
-retargeting, such as Generative Adversarial Networks (GANs) [14] and Variational Auto-Encoders (VAEs)
-[20] for facial expressions transfer [37] or motion patterns [3] between human subjects in videos.
-Having said that, these methods usually also use pre-trained models to extract object-specific
-representations.
+Recent works of deep generative models have derived various techniques for image animation, such as
+Generative Adversarial Networks (GANs) and Variational Auto-Encoders (VAEs) for facial expressions
+transfer or motion patterns between human subjects in videos. Having said that, these methods
+usually also use pre-trained models to extract object-specific representations.
 
-% FIXME: rephrase
-Unfortunately, these pre-trained models are built using costly groundtruth data annotations [2, 27, 31]
-and are not available in general for an arbitrary object category. To address this issues, recently
-Siarohin et al. [28] introduced Monkey-Net, the first object-agnostic deep model for image animation.
-Monkey-Net encodes motion information via keypoints learned in a self-supervised fashion. At test time,
-the source image is animated according to the corresponding keypoint trajectories estimated in the driving
-video. The major weakness of Monkey-Net is that it poorly models object appearance transformations in the
-keypoint neighborhoods assuming a zeroth order model. This leads to poor generation
-quality in the case of large object pose changes.
+However, these models consist of costly ground truth data annotations, and are not available in general
+for an arbitrary object category. Siarohin et al. address these issues with more object-agnostic approach.
+As they use a set of self-learned keypoints with local affine transformations to model complex motions,
+they call the method the First Order Motion Model.\\
 
-% FIXME: rephrase
-To tackle this issue, we propose to use a set of self-learned keypoints together with local affine
-transformations to model complex motions. We therefore call our method a first-order motion model. Second,
-we introduce an occlusion-aware generator, which adopts an occlusion mask automatically estimated to indicate
-object parts that are not visible in the source image and that should be inferred from the context. This is
-especially needed when the driving video contains large motion patterns and occlusions are typical. Third,
-we extend the equivariance loss commonly used for keypoints detector training [18, 44], to improve the
-estimation of local affine transformations. Fourth, we experimentally show that our method significantly
-outperforms state-of-the-art image animation methods and can handle high-resolution datasets where other
-approaches generally fail. Finally, we release a new high resolution dataset, Thai-Chi-HD, which we believe
-could become a reference benchmark for evaluating frameworks for image animation and video generation.
+% \begin{figure}[htb]
+%   \begin{centering}
+%       \includegraphics[scale=0.2]{images/‏‏example.PNG}
+%   \par\end{centering}
+%   \caption{\label{fig:first_figure}Example animations produced by the First Order Motion Model trained on VoxCeleb dataset [22] using relative motion transfer.~\cite{DBLP:journals/corr/abs-2003-00196}}
+% \end{figure} 
 
-% FIXME: Do we want to add details from the method section (equations, etc.) or it is enought?
+\begin{figure}[htb]
+  \begin{centering}
+      \includegraphics[scale=0.24]{images/method.PNG}
+  \par\end{centering}
+  \caption{\label{fig:second_figure}Overview of the First Order Motion Model approach. The model gets as inputs a source image S and a frame of a driving video frame D. Using unsupervised keypoint detector the motion model extracts first order motion
+  representation consisting of keypoints displacements and local affine transformations with respect to a reference frame R. Using the motion representation a dense
+  motion network generates dense optical flow \^T from D to S and occlusion map \^O from D to S. Lastly, using the source image and the dense motion network's outputs, a generator renders the target image.~\cite{DBLP:journals/corr/abs-2003-00196}}
+\end{figure} 
+
+
 
 
 %+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
 % Explanation on our proposed method
 \subsection{Failures Detection Method}
-\subsubsection{Facial Detection with Dlib}
+% \subsubsection{Facial Detection with Dlib}
+At the basis of our method for failures detection is the idea according to which we can detect
+the avatarify failures using anomaly detection methods. To address the task of detecting avatarify
+failures in an output video, we simplified it to the problem of detecting avatarify failures in a
+target image. To do so, the method starts with dividing the video into several frames.
+For each frame we extract the facial landmarks, calculate Euclidean distance between all the points.
+We then normalize and run the results through the local outlier factor model with 20 neighbors.
+Note that we extract the facial landmarks using Dlib~\cite{Dlib, github}, a modern toolkit which contains machine learning
+algorithms and tools for creating complex software to solve real world problems. Among many major features
+that Dlib provides, there is a high quality face recognition capability.
+The test is done using the Yale Face Database~\cite{Yale}, which contains 165 grayscale images in GIF format of
+15 individuals, when for each subject, there are 11 images, one for each different facial expression or
+configuration: center-light, w/glasses, happy, left-light, w/no glasses, normal, right-light, sad, sleepy,
+surprised, and wink. This is in practice using novelty local outlier factor, since the dataset contains only ordinary faces.
 
+The test includes making prediction on each frame of the video. If one or more frames are considered anomalies,
+we declare the video to be deepfake.\\
 
-% \pagebreak{}
+\begin{figure}[htb]
+  \begin{centering}
+      \includegraphics[scale=0.34]{images/our.PNG}
+  \par\end{centering}
+  \caption{\label{fig:method}Overview of our proposed failures detection method.}
+\end{figure}
+
 
 \section{Experiments and Results} \label{experiments and results}
 
 In this section we introduce the experiments and results. A detailed explanation of the
 visual glitches and distortions that we managed to create and detect is provided, as well
-as the results of our proposed method to utilize them for deepfakes detection.
+as the results of our proposed method to utilize them for failures detection.
 
 % examples for edge cases on the Avatarify
 \subsection{First Order Model Robustness}
 
-\pagebreak{}
+In order to evaluate the robustness of real time deepfakes, we started by implementing
+avatarify and then examining edge cases on it. We implemented the First Order Motion Model
+mentioned in \ref{implementation}.
 
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/‏‏Amit_lips_cage.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Amit_lips_cage}The effect of...}
-\end{figure}
+Since we focused on the implementation of avatarify which work in a way that a face in a source
+image is animated according to the motion of a driving video, we tried to test its limitations
+by passing driving videos with various facial gestures and head tilt as input. This includes
+winks, tongue out, smiles, eyebrow raise, different head tilts, etc.
 
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/‏‏Amit_lips_freeman.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Amit_lips_freeman}The effect of...}
-\end{figure}
+From the output videos, it was clear that the avatarify does not work on certain artifacts.
+For example, avatarify is not able to create videos with a tongue out at all, as well as
+creating a proper dental structure. However, even when it fails to copy certain facial gestures
+to a source image perfectly, the outputs still look relatively believable.
 
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/‏‏Amit_smile_cage.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Amit_smile_cage}The effect of...}
-\end{figure}
+The more significant limitation we identified in the implementation, is the creation of a video
+that includes head tilts, or more precisely, that the extraction of the keypoints from the faces
+in the input videos is more complex.\\
 
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/‏‏Amit_smile_freeman.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Amit_smile_freeman}The effect of...}
-\end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
       \includegraphics[scale=0.25]{images/‏‏Amit_tilt1_cage.PNG}
   \par\end{centering}
-  \caption{\label{fig:Amit_tilt1_cage}The effect of...}
+  \caption{\label{fig:Amit_tilt1_cage}The output consists of a source image of Nicolas Cage and a driving video which includes head tilt. It can be seen that the avatarify failed to generate a reliable output.}
 \end{figure}
 
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/‏‏Amit_tilt1_freeman.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Amit_tilt1_freeman}The effect of...}
-\end{figure}
+% \begin{figure}[htb]
+%   \begin{centering}
+%       \includegraphics[scale=0.25]{images/‏‏Amit_tilt1_freeman.PNG}
+%   \par\end{centering}
+%   \caption{\label{fig:Amit_tilt1_freeman}The effect of...}
+% \end{figure}
 
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/‏‏Amit_tilt_cage.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Amit_tilt_cage}The effect of...}
-\end{figure}
+% \begin{figure}[htb]
+%   \begin{centering}
+%       \includegraphics[scale=0.25]{images/‏‏Amit_tilt_cage.PNG}
+%   \par\end{centering}
+%   \caption{\label{fig:Amit_tilt_cage}The effect of...}
+% \end{figure}
 
 \begin{figure}[htb]
   \begin{centering}
       \includegraphics[scale=0.25]{images/‏‏Amit_tilt_freeman.PNG}
   \par\end{centering}
-  \caption{\label{fig:Amit_tilt_freeman}The effect of...}
+  \caption{\label{fig:Amit_tilt_freeman}The output consists of a source image of Morgan Freeman and a driving video which includes head tilt. It can be seen that the avatarify failed to generate a reliable output.}
 \end{figure}
 
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/‏‏Amit_tongue_cage.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Amit_tongue_cage}The effect of...}
-\end{figure}
-
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/‏‏Amit_tongue_freeman.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Amit_tongue_freeman}The effect of...}
-\end{figure}
-
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/Oren_smile_freeman.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Oren_smile_freeman}The effect of...}
-\end{figure}
-
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/‏‏Oren_smile_cage.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Oren_smile_cage}The effect of...}
-\end{figure}
-
-\begin{figure}[htb]
+\begin{figure}[!htb]
   \begin{centering}
       \includegraphics[scale=0.25]{images/Oren_tilt_cage.PNG}
   \par\end{centering}
-  \caption{\label{fig:Oren_tilt_cage}The effect of...}
+  \caption{\label{fig:Oren_tilt_cage}The output consists of a source image of Nicolas Cage and a driving video which includes head tilt. It can be seen that the avatarify failed to generate a reliable output.}
 \end{figure}
+% \pagebreak{}
 
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/Oren_tilt_freeman.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Oren_tilt_freeman}The effect of...}
-\end{figure}
+% \begin{figure}[htb]
+%   \begin{centering}
+%       \includegraphics[scale=0.25]{images/Oren_tilt_freeman.PNG}
+%   \par\end{centering}
+%   \caption{\label{fig:Oren_tilt_freeman}The effect of...}
+% \end{figure}
 
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/Oren_wink_cage.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Oren_wink_cage}The effect of...}
-\end{figure}
+The implementation, including the experiments and results can be found using the following link:\\
+https://colab.research.google.com/drive/1oI4jPx9cB26OsCerUs2JfxyGkffBWM5v
 
-\begin{figure}[htb]
-  \begin{centering}
-      \includegraphics[scale=0.25]{images/Oren_wink_freeman.PNG}
-  \par\end{centering}
-  \caption{\label{fig:Oren_wink_freeman}The effect of...}
-\end{figure}
 
 \pagebreak{}
 
 \subsection{Failures Detection}
+
+In order to test our proposed method, we fed it with two videos -- authentic video and a deepfake of Morgan Freeman,
+derived from the authentic video as a driving video using the First Order Motion model. When we ran the method on
+each of the two videos, we found that indeed no failures were detected in the original video, while in the deepfake they were.
+
+\begin{figure}[!htb]
+  \begin{centering}
+      \includegraphics[scale=0.6]{images/oren.png}
+  \par\end{centering}
+  \caption{\label{fig:Oren}An example of the facial landmarks extraction. Using the local outlier factor model, the left image's landmarks considered anomalies, while in the right image no failures was found.}
+\end{figure}
+
+Note that in some cases the face in the target image is distorted enough that it is not possible to identify the face,
+and therefore to determine the landmarks. This fact can be exploited for further improvements in the failure detection task.
 
 
 % \pagebreak{}
 
 \section{Discussion} \label{discussion}
 
-Today, deepfakes are bla bla bla..
+As the impact of social media on our world grows moment by moment, along with the negligible cost
+and lack of need for experience enabling almost anyone to create high quality deepfakes, this
+emerging technology poses a serious threat to society.
+
+For this reason, in academia and industry there is an extensive practice in this technology, and
+they offer many developments, both for improving the quality of deepfake applications and conversely,
+mechanisms for dealing with this phenomenon.
+
+In this work we experimented with an implementation of real time deepfakes, the first order motion
+model-based avatarify, proposed by Siarohin et al.~\cite{DBLP:journals/corr/abs-2003-00196}, and
+evaluated its robustness by examining various end cases on it.
+
+We have learned that avatarify implementations are not robust, and that various facial gestures
+and artifacts can cause significant failures in the target videos. It seems that most failures
+caused by head tilt and rotations in the driving video, as well as gestures which include objects
+that the model does not recognize in the source image, such as tongue or teeth.
+
+After demonstrating failures in the implementation, we also provided a method to utilize them for
+failures detection. We were able to successfully demonstrate our method on two videos -- authentic
+video and a deepfake. No failures were detected in the original video, while in the
+deepfake they were.
+
 
 \pagebreak{}
-
+\pagebreak{}
 
 \bibliographystyle{plain}
 \bibliography{Proposal}
